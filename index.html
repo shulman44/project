@@ -1,1 +1,436 @@
 
+<html>
+<head>
+<title>Shulman&co</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+<script type="text/javascript" src="https://static.codehs.com/gulp/5f2bf3cbe0b82d8b0502adae2553de7ef1d4309e/chs-js-lib/chs.js"></script>
+    
+    <style>
+    
+    
+        body{
+            
+            
+            background-image:url("http://www.publicdomainpictures.net/pictures/130000/velka/pacman-games.jpg");
+            
+        }
+    
+    
+    
+    </style>
+
+
+
+
+</head>
+
+<body>
+<h1 style="text-align:center; color:blueviolet; font-family:impact;">Can you find the door?</h1>
+
+
+<div align="center">
+<canvas style="border:1px solid black; display: inline-block; vertical-align:top"
+width="400"
+height="500"
+class="codehs-editor-canvas"></canvas>
+
+</div>
+    
+    <script>
+window.onload = function() {
+
+    //Shulman-Maze
+
+
+var player;
+var doorOutline = new Rectangle(50,90);
+var door = new Rectangle(30,70);
+var doorKnob = new Circle(5);
+var player = new WebImage("http://4.bp.blogspot.com/-Q-pTTlpjVkU/UTWoevv2cZI/AAAAAAAAACY/NAuBgjTfzno/s320/fantasma.png");
+//var player = new Rectangle(40,40);
+var rectOne;
+var box;
+setTimer(checkObjects, 10);
+var vx,vy;
+vx=0;
+vy=20;
+var secretRoomBox;
+var flag="0";
+
+
+
+
+
+
+
+////////////////////////////////////////////////
+function start(){
+ background();
+ secretRoom();
+    makeMap();
+    makeDoor();
+    ghost();
+    keyDownMethod(moveGhost);
+   setTimer(checkObjects,15);
+   setTimer(checkWalls,10);
+   
+}
+/////// moveGhost //////////////////////
+function moveGhost(e) {
+
+        if (e.keyCode == Keyboard.DOWN) {
+                //player.move(0, 20);
+                player.move(vx, vy);
+        }
+
+        if (e.keyCode == Keyboard.RIGHT){
+            //player.move(20,0);
+            player.move(vy, vx);
+        }
+        if (e.keyCode == Keyboard.UP){
+            //player.move(0,-20);
+            player.move(vx, -vy);
+        }
+
+        if (e.keyCode == Keyboard.LEFT){
+           // player.move(-20,0);
+            player.move(-vy, vx);
+        }
+
+
+}
+////////////////////////////////////////////////////
+function checkWalls(){
+if (player.getX()<getWidth()&&player.getX()>secretRoomBox.getX() && player.getY()<80 && player.getY()<40)
+{
+   player.setPosition(getWidth()-50,42);
+    flag="1";
+
+}
+
+if (flag!="1"){
+
+        if(player.getX() < 0 ||
+        player.getX() + player.getWidth() > getWidth()){
+         player.setPosition(13,50);
+        }
+        if(player.getY() - player.getHeight() < 0){
+            player.setPosition(13,50);
+        }
+
+        if(player.getY() + player.getHeight() > getHeight()){
+         player.setPosition(13,50);
+        }
+
+}
+}
+//////////////////////////////////////////////////////
+
+
+
+function getCollidingObject(){
+        var left = doorKnob4.getX() - doorKnob4.getRadius() ;
+        var right = doorKnob4.getX() + doorKnob4.getRadius();
+
+        var top =doorKnob4.getY()- doorKnob4.getRadius();
+        var bottom = doorKnob4.getY() + doorKnob4.getRadius();
+
+        var topLeft = getElementAt(left, top);
+        if(topLeft) return topLeft;
+
+        var topRight = getElementAt(right, top);
+        if(topRight) return topRight;
+
+        var bottomLeft = getElementAt(left, bottom);
+        if(bottomLeft) return bottomLeft;
+
+        var bottomRight = getElementAt(right, bottom);
+        if(bottomRight) return bottomRight;
+}
+
+/////////////checkObjects////////////////
+
+
+function checkObjects(){
+    var elem = getCollidingObject();
+    if(elem == player){
+    player.setPosition(getWidth()-50,42);
+    setTimer(sleepGhost,180);
+        }
+
+        }
+        
+        
+        
+        function getCollidingObject1(){
+        var left = rectOne.getX() - rectOne.getRadius() ;
+        var right = rectOne.getX() + rectOne.getRadius();
+
+        var top =rectOne.getY()- rectOne.getRadius();
+        var bottom = drectOne.getY() + rectOne.getRadius();
+
+        var topLeft = getElementAt(left, top);
+        if(topLeft) return topLeft;
+
+        var topRight = getElementAt(right, top);
+        if(topRight) return topRight;
+
+        var bottomLeft = getElementAt(left, bottom);
+        if(bottomLeft) return bottomLeft;
+
+        var bottomRight = getElementAt(right, bottom);
+        if(bottomRight) return bottomRight;
+}
+
+function checkObjects1(){
+    var elem = getCollidingObject1();
+    if(elem == player){
+    player.setPosition(13,50);
+    
+        }
+
+        }
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////StartingMessage//////////////////////////
+
+
+
+////////////////////////Background////////////////////////////////////
+
+
+function background(){
+
+    var back = new Rectangle(500,500);
+    back.setPosition(0,0);
+    back.setColor(Color.cyan);
+    add(back);
+
+}
+
+var rectOne = new Rectangle(5,300);
+
+
+////////////////////////Makes Maze Map///////////////////////////////
+function makeMap(){
+    
+    var instructions = readLine("Welcome to find the room. What you need to do is use the keyboard to move your player around the map, and try to find the door that leads to the secret room. Only one door is the enterance good luck!!! ")
+    
+    rectOne.setPosition(70,0);
+    rectOne.setColor(Color.blue);
+    add(rectOne);
+
+    var rectTwo = new Rectangle(200,5);
+    rectTwo.setPosition(70,160);
+    rectTwo.setColor(Color.blue);
+    add(rectTwo);
+
+    var rectThree = new Rectangle(5,250);
+    rectThree.setPosition(150,160);
+    rectThree.setColor(Color.blue);
+    add(rectThree);
+
+    var rectFour = new Rectangle(95,5);
+    rectFour.setPosition(55,360);
+    rectFour.setColor(Color.blue);
+    add(rectFour);
+
+    var rectFive = new Rectangle(165,5);
+    rectFive.setPosition(150,280);
+    rectFive.setColor(Color.blue);
+    add(rectFive);
+
+    var rectSix = new Rectangle(165,5);
+    rectSix.setPosition(240,80);
+    rectSix.setColor(Color.blue);
+    add(rectSix);
+
+    var rectSeven = new Rectangle(165,5);
+    rectSeven.setPosition(240,370);
+    rectSeven.setColor(Color.blue);
+    add(rectSeven);
+
+    var rectEight = new Rectangle(165,5);
+    rectEight.setPosition(240,220);
+    rectEight.setColor(Color.blue);
+    add(rectEight);
+
+    var rectNine = new Rectangle(5,70);
+    rectNine.setPosition(240,430);
+    rectNine.setColor(Color.blue);
+    add(rectNine);
+
+    var rectTen = new Rectangle(5,70);
+    rectTen.setPosition(330,80);
+    rectTen.setColor(Color.blue);
+    add(rectTen);
+
+    var line = new Line(280,0,280,80);
+    line.setColor(Color.blue);
+    line.setLineWidth(6);
+    add(line);
+
+    var txtStart = new Text ("Start Here", "11pt Arial");
+    txtStart.setPosition(1,20);
+    txtStart.setColor(Color.blue);
+    add(txtStart);
+
+
+    var txtSecRoom = new Text ("Secret Room ", "10pt Arial");
+    txtSecRoom.setPosition(270,80);
+    txtSecRoom.setColor(Color.blue);
+    txtSecRoom.rotate(-90);
+    add(txtSecRoom);
+
+
+
+
+    
+
+
+    var line = new Line(280,0,280,80);
+    line.setColor(Color.blue);
+    line.setLineWidth(6);
+    add(line);
+
+
+
+
+}
+var DoorOutline2 = new Rectangle(50,90);
+var door2 = new Rectangle(30,70);
+var doorKnob2 = new Circle(5);
+
+var doorOutline3 = new Rectangle(50,90);
+var door3 = new Rectangle(30,70);
+var doorKnob3 = new Circle(5);
+
+var doorOutline4 = new Rectangle(50,90);
+var door4 = new Rectangle(30,70);
+var doorKnob4 = new Circle(5);
+///////////////////////////Make Door//////////////////////////////////////
+
+function makeDoor(){
+
+    doorOutline.setPosition(90,50);
+    doorOutline.setColor(Color.blue);
+    add(doorOutline);
+
+
+    door.setPosition(100,60);
+    door.setColor(Color.cyan);
+    add(door);
+
+
+    doorKnob.setPosition(110,100);
+    doorKnob.setColor(Color.blue);
+    add(doorKnob);
+    
+    DoorOutline2.setPosition(90,170);
+    DoorOutline2.setColor(Color.blue);
+    add(DoorOutline2)
+    
+    door2.setPosition(100,180);
+    door2.setColor(Color.cyan);
+    add(door2)
+    
+    doorKnob2.setPosition(110,220);
+    doorKnob2.setColor(Color.blue);
+    add(doorKnob2);
+    
+    doorOutline3.setPosition(340,100);
+    doorOutline3.setColor(Color.blue);
+    add(doorOutline3);
+    
+    door3.setPosition(350,110);
+    door3.setColor(Color.cyan);
+    add(door3);
+    
+    doorKnob3.setPosition(360,150);
+    doorKnob3.setColor(Color.blue);
+    add(doorKnob3);
+    
+    doorOutline4.setPosition(340,380);
+    doorOutline4.setColor(Color.blue);
+    add(doorOutline4)
+    
+    door4.setPosition(350,390);
+    door4.setColor(Color.cyan);
+    add(door4);
+    
+    doorKnob4.setPosition(360,430);
+    doorKnob4.setColor(Color.blue);
+    add(doorKnob4);
+    
+    
+
+}
+var win = new Text("You found the door!!!","25pt Arial Black");
+var color = Randomizer.nextColor();
+
+function addWin(){
+    
+    win.setPosition(15,210);
+    win.setColor(Randomizer.nextColor(3));
+    add(win);
+    
+}
+
+
+//////////////////////////////GhostInRoom//////////////////////////
+function sleepGhost(){
+    addWin();
+   player.setPosition(getWidth()-50,42);
+}
+
+//println ("Congrats you found the enterance to the secret room!!!");
+
+
+
+
+
+/////////////////////////Make Ghost///////////////////////////////////////
+
+function ghost(){
+    player.setSize(40,40);
+    player.setPosition(13,50);
+    add(player);
+}
+
+function secretRoom(){
+    secretRoomBox=new WebImage("http://orignauxmoose.com/wp-content/uploads/2011/06/frick_secret_rooms03.jpg");
+    secretRoomBox.setSize(120,80);
+    secretRoomBox.setPosition(280,0);
+    add(secretRoomBox);
+}
+
+
+
+
+
+    if (typeof start === 'function') {
+        start();
+    }
+};
+</script>
+    
+    <h2 style="text-align:center; color:blueviolet">Created by Shulman companies</h2>
+    <h3 style="text-align:center; color:blueviolet">Copyright 2017</h3>
+
+
+
+
+</body>
+</html>
+
